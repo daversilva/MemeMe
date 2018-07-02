@@ -9,17 +9,29 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    @IBOutlet weak var imagePickerView: UIImageView!
+    @IBOutlet weak var cameraButton: UIBarButtonItem!
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @IBAction func pickerAnImageFromCamera(_ sender: UIBarButtonItem) {
     }
-
-
+    
+    @IBAction func pickerAnImageFromAlbum(_ sender: UIBarButtonItem) {
+    }
+    
+    @IBAction func pickerCancel(_ sender: UIBarButtonItem) {
+    }
+    
+    @IBAction func pickerShare(_ sender: UIBarButtonItem) {
+    }
+    
 }
 
