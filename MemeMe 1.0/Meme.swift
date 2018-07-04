@@ -16,6 +16,3 @@ struct Meme {
     let meme: UIImage!
 }
 
-enum TextFieldInit: String {
-    case top = "TOP", bottom = "BOTTOM"
-}

@@ -19,6 +19,10 @@ class MemeViewController: UIViewController {
     @IBOutlet weak var cancel: UIBarButtonItem!
     @IBOutlet weak var share: UIBarButtonItem!
     
+    enum TextFieldInit: String {
+        case top = "TOP", bottom = "BOTTOM"
+    }
+
     let memeTextAttributes: [String: Any] = [
         NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
         NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
@@ -31,8 +35,6 @@ class MemeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        topTextField.delegate = self
-        bottomTextField.delegate = self
         topTextField.text = TextFieldInit.top.rawValue
         bottomTextField.text = TextFieldInit.bottom.rawValue
         
@@ -42,7 +44,9 @@ class MemeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configureTextField()
+        cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
+        configureTextField(topTextField)
+        configureTextField(bottomTextField)
         subscribeToKeyboardNotifications()
     }
     
@@ -95,33 +99,28 @@ class MemeViewController: UIViewController {
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
         return keyboardSize.cgRectValue.height
     }
-    
-    func configureTextField() {
-        cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
-        topTextField.defaultTextAttributes = memeTextAttributes
-        bottomTextField.defaultTextAttributes = memeTextAttributes
-        topTextField.textAlignment = .center
-        bottomTextField.textAlignment = .center
-    }
 
-    @IBAction func pickerAnImageFromCamera(_ sender: UIBarButtonItem) {
+    func configureTextField(_ textField: UITextField) {
+        textField.defaultTextAttributes = memeTextAttributes
+        textField.textAlignment = .center
+        textField.delegate = self
+    }
+    
+    func configurePickerAnImage(_ sourceType: UIImagePickerControllerSourceType) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
-        imagePicker.sourceType = .camera
-
-        present(imagePicker, animated: true, completion: nil)
+        imagePicker.sourceType = sourceType
         
+        present(imagePicker, animated: true, completion: nil)
         share.isEnabled = true
+    }
+    
+    @IBAction func pickerAnImageFromCamera(_ sender: UIBarButtonItem) {
+        configurePickerAnImage(.camera)
     }
     
     @IBAction func pickerAnImageFromAlbum(_ sender: UIBarButtonItem) {
-        let pickerController = UIImagePickerController()
-        pickerController.delegate = self
-        pickerController.sourceType = .photoLibrary
-        
-        present(pickerController, animated: true, completion: nil)
-        
-        share.isEnabled = true
+        configurePickerAnImage(.photoLibrary)
     }
     
     @IBAction func pickerCancel(_ sender: UIBarButtonItem) {}
