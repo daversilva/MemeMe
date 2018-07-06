@@ -23,12 +23,6 @@ class MemeViewController: UIViewController {
         case top = "TOP", bottom = "BOTTOM"
     }
 
-    let memeTextAttributes: [String: Any] = [
-        NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
-        NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
-        NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-        NSAttributedStringKey.strokeWidth.rawValue: -3.0]
-    
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -101,6 +95,12 @@ class MemeViewController: UIViewController {
     }
 
     func configureTextField(_ textField: UITextField) {
+        let memeTextAttributes: [String: Any] = [
+            NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
+            NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
+            NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
+            NSAttributedStringKey.strokeWidth.rawValue: -3.0]
+        
         textField.defaultTextAttributes = memeTextAttributes
         textField.textAlignment = .center
         textField.delegate = self
