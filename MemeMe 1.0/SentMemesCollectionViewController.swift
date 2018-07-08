@@ -19,6 +19,15 @@ class SentMemesCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        collectionView?.reloadData()
+    }
+    
+    @IBAction func showMemeEditor(_ sender: UIBarButtonItem) {
+        let vc = storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! MemeEditorViewController
+        present(vc, animated: true, completion: nil)
+    }
 
     // MARK: UICollectionViewDataSource
 

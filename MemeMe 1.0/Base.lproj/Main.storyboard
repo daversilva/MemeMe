@@ -34,7 +34,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Sent Memes" id="oea-VX-SC1">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="sPt-PX-FIs"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="sPt-PX-FIs">
+                            <connections>
+                                <action selector="showMemeEditor:" destination="7c4-WC-cZO" id="stM-0I-Ya3"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vvW-tl-QMq" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -132,7 +136,11 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" title="Sent Memes" id="FAJ-65-ntu">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="HbE-jo-S8x"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="HbE-jo-S8x">
+                            <connections>
+                                <action selector="showMemeEditor:" destination="khv-qm-7ab" id="92j-TF-WaO"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s5i-MW-iCe" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -142,7 +150,7 @@
         <!--Meme Detail View Controller-->
         <scene sceneID="Vgq-Ar-fUZ">
             <objects>
-                <viewController id="Yh6-8V-rOb" customClass="MemeDetailViewController" customModule="MemeMe_1_0" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MemeDetailViewController" id="Yh6-8V-rOb" customClass="MemeDetailViewController" customModule="MemeMe_1_0" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="WuP-Mk-yuc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -171,10 +179,10 @@
             </objects>
             <point key="canvasLocation" x="2108" y="-420.53973013493254"/>
         </scene>
-        <!--Meme View Controller-->
+        <!--Meme Editor View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="MemeViewController" customModule="MemeMe_1_0" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MemeEditorViewController" id="BYZ-38-t0r" customClass="MemeEditorViewController" customModule="MemeMe_1_0" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

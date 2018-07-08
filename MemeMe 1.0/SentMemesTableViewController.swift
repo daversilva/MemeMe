@@ -10,6 +10,9 @@ import UIKit
 
 class SentMemesTableViewController: UITableViewController {
     
+
+    
+    
     var memes: [Meme]! {
         let object = UIApplication.shared.delegate
         let appDelegate = object as! AppDelegate
@@ -19,7 +22,17 @@ class SentMemesTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    
+    @IBAction func showMemeEditor(_ sender: UIBarButtonItem) {
+        let vc = storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! MemeEditorViewController
+        present(vc, animated: true, completion: nil)
+    }
+    
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -27,6 +40,9 @@ class SentMemesTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        /*
+         
+         */
         let cell = tableView.dequeueReusableCell(withIdentifier: "SentMemeTableViewCell", for: indexPath)
         let meme = memes[(indexPath as NSIndexPath).row]
         
