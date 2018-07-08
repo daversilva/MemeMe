@@ -9,10 +9,7 @@
 import UIKit
 
 class SentMemesTableViewController: UITableViewController {
-    
 
-    
-    
     var memes: [Meme]! {
         let object = UIApplication.shared.delegate
         let appDelegate = object as! AppDelegate
@@ -40,15 +37,12 @@ class SentMemesTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        /*
-         
-         */
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SentMemeTableViewCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MemeTableViewCell", for: indexPath) as! MemeTableViewCell
         let meme = memes[(indexPath as NSIndexPath).row]
         
-        cell.textLabel?.text = meme.top
-        cell.imageView?.image = meme.meme
-
+        cell.labelMeme.text = meme.top
+        cell.imageMeme?.image = meme.meme
+        
         return cell
     }
 

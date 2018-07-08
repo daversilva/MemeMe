@@ -13,7 +13,6 @@ class MemeDetailViewController: UIViewController {
     var meme: Meme!
     
     @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var label: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +21,6 @@ class MemeDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        label.text = meme.top
         imageView.image = meme.meme
         tabBarController?.tabBar.isHidden = true
     }
