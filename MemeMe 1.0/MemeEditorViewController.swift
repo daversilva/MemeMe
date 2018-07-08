@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MemeViewController: UIViewController {
+class MemeEditorViewController: UIViewController {
     
     @IBOutlet weak var navBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
@@ -23,12 +23,6 @@ class MemeViewController: UIViewController {
         case top = "TOP", bottom = "BOTTOM"
     }
 
-    let memeTextAttributes: [String: Any] = [
-        NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
-        NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
-        NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-        NSAttributedStringKey.strokeWidth.rawValue: -3.0]
-    
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -39,7 +33,6 @@ class MemeViewController: UIViewController {
         bottomTextField.text = TextFieldInit.bottom.rawValue
         
         share.isEnabled = false
-        cancel.isEnabled = false
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -57,6 +50,10 @@ class MemeViewController: UIViewController {
     
     func save(_ memedImage: UIImage) {
         let meme = Meme(top: topTextField.text!, bottom: bottomTextField.text!, original: imagePickerView.image!, meme: memedImage)
+        
+        let object = UIApplication.shared.delegate
+        let appDelegate = object as! AppDelegate
+        appDelegate.memes.append(meme)
     }
     
     func generateMemedImage() -> UIImage {
@@ -101,6 +98,12 @@ class MemeViewController: UIViewController {
     }
 
     func configureTextField(_ textField: UITextField) {
+        let memeTextAttributes: [String: Any] = [
+            NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
+            NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
+            NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
+            NSAttributedStringKey.strokeWidth.rawValue: -3.0]
+        
         textField.defaultTextAttributes = memeTextAttributes
         textField.textAlignment = .center
         textField.delegate = self
@@ -123,9 +126,12 @@ class MemeViewController: UIViewController {
         configurePickerAnImage(.photoLibrary)
     }
     
-    @IBAction func pickerCancel(_ sender: UIBarButtonItem) {}
+    @IBAction func pickerCancel(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
     
     @IBAction func share(_ sender: UIBarButtonItem) {
+        cancel.isEnabled = true
         let image = generateMemedImage()
         let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         
@@ -141,7 +147,7 @@ class MemeViewController: UIViewController {
     
 }
 
-extension MemeViewController: UITextFieldDelegate {
+extension MemeEditorViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField.text == TextFieldInit.top.rawValue || textField.text == TextFieldInit.bottom.rawValue {
@@ -158,7 +164,7 @@ extension MemeViewController: UITextFieldDelegate {
     
 }
 
-extension MemeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension MemeEditorViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
