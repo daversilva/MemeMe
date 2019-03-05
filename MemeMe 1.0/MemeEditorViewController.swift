@@ -7,32 +7,39 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
+import Foundation
 
 class MemeEditorViewController: UIViewController {
     
+    /// Outlets
     @IBOutlet weak var navBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var imagePickerView: UIImageView!
     @IBOutlet weak var cameraButton: UIBarButtonItem!
     @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var bottomTextField: UITextField!
-    @IBOutlet weak var cancel: UIBarButtonItem!
-    @IBOutlet weak var share: UIBarButtonItem!
+    @IBOutlet weak var cancelButton: UIBarButtonItem!
+    @IBOutlet weak var shareButton: UIBarButtonItem!
+    @IBOutlet weak var albumButtoon: UIBarButtonItem!
     
-    enum TextFieldInit: String {
-        case top = "TOP", bottom = "BOTTOM"
-    }
+    /// variables
+    let top = "TOP"
+    let bottom = "BOTTOM"
+    
+    /// RxSwift
+    var disposeBag = DisposeBag()
+    var shareIsEnable = BehaviorRelay<Bool>(value: false)
 
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
+    override var prefersStatusBarHidden: Bool { return true }
 
+    /// lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        topTextField.text = TextFieldInit.top.rawValue
-        bottomTextField.text = TextFieldInit.bottom.rawValue
         
-        share.isEnabled = false
+        setupViews()
+        bindViews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -53,22 +60,25 @@ class MemeEditorViewController: UIViewController {
         
         let object = UIApplication.shared.delegate
         let appDelegate = object as! AppDelegate
-        appDelegate.memes.append(meme)
+        appDelegate.memes.accept(appDelegate.memes.value + [meme])
     }
     
     func generateMemedImage() -> UIImage {
-        navBar.isHidden = true
-        toolBar.isHidden = true
+        configureBars(true)
         
         UIGraphicsBeginImageContext(self.view.frame.size)
         view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
         let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         
-        navBar.isHidden = false
-        toolBar.isHidden = false
+        configureBars(false)
         
         return memedImage
+    }
+    
+    func configureBars(_ isHidden: Bool) {
+        navBar.isHidden = isHidden
+        toolBar.isHidden = isHidden
     }
     
     func subscribeToKeyboardNotifications() {
@@ -115,34 +125,7 @@ class MemeEditorViewController: UIViewController {
         imagePicker.sourceType = sourceType
         
         present(imagePicker, animated: true, completion: nil)
-        share.isEnabled = true
-    }
-    
-    @IBAction func pickerAnImageFromCamera(_ sender: UIBarButtonItem) {
-        configurePickerAnImage(.camera)
-    }
-    
-    @IBAction func pickerAnImageFromAlbum(_ sender: UIBarButtonItem) {
-        configurePickerAnImage(.photoLibrary)
-    }
-    
-    @IBAction func pickerCancel(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction func share(_ sender: UIBarButtonItem) {
-        cancel.isEnabled = true
-        let image = generateMemedImage()
-        let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        
-        controller.completionWithItemsHandler = { activity, completed, items, error in
-            if completed {
-                self.save(image)
-                self.dismiss(animated: true, completion: nil)
-            }
-        }
-        
-        present(controller, animated: true, completion: nil)
+        shareIsEnable.accept(true)
     }
     
 }
@@ -150,7 +133,7 @@ class MemeEditorViewController: UIViewController {
 extension MemeEditorViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField.text == TextFieldInit.top.rawValue || textField.text == TextFieldInit.bottom.rawValue {
+        if textField.text == top || textField.text == bottom {
             textField.text = ""
         }
         
@@ -176,5 +159,50 @@ extension MemeEditorViewController: UIImagePickerControllerDelegate, UINavigatio
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK: - Setups
+extension MemeEditorViewController {
+    
+    private func setupViews() {
+        topTextField.text = top
+        bottomTextField.text = bottom
+        
+        shareIsEnable.accept(false)
+    }
+    
+    private func bindViews() {
+        
+        shareIsEnable.bind(to: shareButton.rx.isEnabled).disposed(by: disposeBag)
+        
+        cancelButton.rx.tap.bind { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        }.disposed(by: disposeBag)
+        
+        cameraButton.rx.tap.bind { [weak self] in
+            self?.configurePickerAnImage(.camera)
+        }.disposed(by: disposeBag)
+        
+        albumButtoon.rx.tap.bind { [weak self] in
+            self?.configurePickerAnImage(.photoLibrary)
+        }.disposed(by: disposeBag)
+        
+        shareButton.rx.tap.bind { [weak self] in
+            guard let strongSelf = self else { return }
+            
+            strongSelf.cancelButton.isEnabled = true
+            let image = strongSelf.generateMemedImage()
+            let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+            
+            controller.completionWithItemsHandler = { activity, completed, items, error in
+                if completed {
+                    strongSelf.save(image)
+                    strongSelf.dismiss(animated: true, completion: nil)
+                }
+            }
+            
+            strongSelf.present(controller, animated: true, completion: nil)
+        }.disposed(by: disposeBag)
     }
 }
