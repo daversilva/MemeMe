@@ -11,19 +11,7 @@ import RxCocoa
 import RxSwift
 import RxDataSources
 
-struct SectionOfMeme {
-    var header: String
-    var items: [Item]
-}
-
-extension SectionOfMeme: SectionModelType {
-    typealias Item = Meme
-    
-    init(original: SectionOfMeme, items: [Item]) {
-        self = original
-        self.items = items
-    }
-}
+typealias SectionOfMeme = AnimatableSectionModel<String, Meme>
 
 class SentMemesTableViewController: UITableViewController {
     
@@ -103,7 +91,7 @@ extension SentMemesTableViewController {
         
         memesSaved
             .bind { [weak self] memes in
-                self?.section.accept([SectionOfMeme(header: "", items: memes)])
+                self?.section.accept([SectionOfMeme(model: "", items: memes)])
                 self?.emptyMemesLabel.isHidden = !(memes.count == 0)
                 self?.tableView.separatorStyle = memes.count == 0 ? .none : .singleLine
             }

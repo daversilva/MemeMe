@@ -101,7 +101,7 @@ extension SentMemesCollectionViewController {
         
         memesSaved
             .bind { [weak self] memes in
-                self?.section.accept([SectionOfMeme(header: "", items: memes)])
+                self?.section.accept([SectionOfMeme(model: "", items: memes)])
                 self?.emptyMemesLabel.isHidden = !(memes.count == 0) 
             }
             .disposed(by: disposeBag)
