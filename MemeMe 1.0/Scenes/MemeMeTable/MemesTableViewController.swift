@@ -1,9 +1,9 @@
 //
-//  SentMemesTableViewController.swift
+//  MemesTableViewController.swift
 //  MemeMe 1.0
 //
-//  Created by David Rodrigues on 06/07/2018.
-//  Copyright © 2018 David Rodrigues. All rights reserved.
+//  Created by David Rodrigues on 08/03/19.
+//  Copyright © 2019 David Rodrigues. All rights reserved.
 //
 
 import UIKit
@@ -11,12 +11,18 @@ import RxCocoa
 import RxSwift
 import RxDataSources
 
-typealias SectionOfMeme = AnimatableSectionModel<String, Meme>
+protocol MemesTableViewDelegate {
+    func didShowMemeEditor()
+}
 
-class SentMemesTableViewController: UITableViewController {
+class MemesTableViewController: UIViewController {
     
-    @IBOutlet weak var addMemeButton: UIBarButtonItem!
+    @IBOutlet weak var tableView: UITableView!
     
+    var delegate: MemesTableViewDelegate?
+    
+    let addMemeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: nil, action: nil)
+    var section = BehaviorRelay<[SectionOfMeme]>(value: [])
     let disposeBag = DisposeBag()
     
     var memesSaved: BehaviorRelay<[Meme]> {
@@ -24,8 +30,6 @@ class SentMemesTableViewController: UITableViewController {
         let appDelegate = object as! AppDelegate
         return appDelegate.memes
     }
-    
-    var section = BehaviorRelay<[SectionOfMeme]>(value: [])
     
     /// custom
     let emptyMemesLabel: UILabel = {
@@ -38,7 +42,6 @@ class SentMemesTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupViews()
         bindViews()
     }
@@ -47,15 +50,24 @@ class SentMemesTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
+    
+    
 
 }
 
 // MARK: - Setups
-extension SentMemesTableViewController {
+extension MemesTableViewController {
     
     private func setupViews() {
+        navigationItem.title = "Sent Memes"
+        navigationItem.rightBarButtonItem = addMemeButton
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 110
+        tableView.registerCellWithNib(MemeMeCell.self)
+        
         tableView.addSubview(emptyMemesLabel)
-
+        
         emptyMemesLabel.centerXAnchor.constraint(equalTo: tableView.centerXAnchor).isActive = true
         emptyMemesLabel.centerYAnchor.constraint(equalTo: tableView.centerYAnchor, constant: -55).isActive = true
     }
@@ -64,15 +76,15 @@ extension SentMemesTableViewController {
         
         let dataSource = RxTableViewSectionedReloadDataSource<SectionOfMeme> (
             configureCell: { dataSource, tableView, indexPath, item in
-            let cell = tableView.dequeueReusableCell(withIdentifier: "MemeTableViewCell", for: indexPath) as! MemeTableViewCell
-            cell.labelMeme.text = item.top
-            cell.imageMeme?.image = item.meme
-            return cell
+                let cell = tableView.dequeueReusableCell(type: MemeMeCell.self, indexPath: indexPath)
+                cell.labelMeme.text = item.top
+                cell.imageMeme?.image = item.meme
+                return cell
         })
         
-        tableView.delegate = nil
-        tableView.dataSource = nil
-        tableView.rx.setDelegate(self).disposed(by: disposeBag)
+//        tableView.delegate = nil
+//        tableView.dataSource = nil
+//        tableView.rx.setDelegate(self).disposed(by: disposeBag)
         
         tableView.rx.itemSelected
             .observeOn(MainScheduler.asyncInstance)
@@ -94,15 +106,11 @@ extension SentMemesTableViewController {
                 self?.section.accept([SectionOfMeme(model: "", items: memes)])
                 self?.emptyMemesLabel.isHidden = !(memes.count == 0)
                 self?.tableView.separatorStyle = memes.count == 0 ? .none : .singleLine
-            }
-            .disposed(by: disposeBag)
+        }.disposed(by: disposeBag)
         
         addMemeButton.rx.tap.bind { [weak self] in
-            let vc = self?.storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! xMemeEditorViewController
-            self?.present(vc, animated: true, completion: nil)
+            self?.delegate?.didShowMemeEditor()
         }.disposed(by: disposeBag)
         
     }
 }
-
-

@@ -7,14 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC19C1B622318A6800FB7964 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC19C1B522318A6800FB7964 /* AppCoordinator.swift */; };
+		BC19C1BA22318B0B00FB7964 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC19C1B922318B0B00FB7964 /* Coordinator.swift */; };
+		BC19C1BD2231914900FB7964 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC19C1BC2231914900FB7964 /* MainCoordinator.swift */; };
 		BCAD5BAD20EAE944005C15C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD5BAC20EAE944005C15C4 /* AppDelegate.swift */; };
-		BCAD5BAF20EAE944005C15C4 /* MemeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD5BAE20EAE944005C15C4 /* MemeEditorViewController.swift */; };
+		BCAD5BAF20EAE944005C15C4 /* xMemeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD5BAE20EAE944005C15C4 /* xMemeEditorViewController.swift */; };
 		BCAD5BB220EAE944005C15C4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCAD5BB020EAE944005C15C4 /* Main.storyboard */; };
 		BCAD5BB420EAE945005C15C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCAD5BB320EAE945005C15C4 /* Assets.xcassets */; };
 		BCAD5BB720EAE945005C15C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCAD5BB520EAE945005C15C4 /* LaunchScreen.storyboard */; };
 		BCB0B55F20EC4FF000BE3DA4 /* Meme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB0B55E20EC4FF000BE3DA4 /* Meme.swift */; };
 		BCC1B06220F0614400C3B09A /* SentMemesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1B06120F0614400C3B09A /* SentMemesCollectionViewController.swift */; };
 		BCC1B06420F0619100C3B09A /* SentMemesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1B06320F0619100C3B09A /* SentMemesTableViewController.swift */; };
+		BCD4E159223299C100CCB888 /* MemesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD4E157223299C100CCB888 /* MemesTableViewController.swift */; };
+		BCD4E15A223299C100CCB888 /* MemesTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCD4E158223299C100CCB888 /* MemesTableViewController.xib */; };
+		BCD4E15C22329A5900CCB888 /* MemesTableCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD4E15B22329A5900CCB888 /* MemesTableCoordinator.swift */; };
+		BCD4E15F2232A52700CCB888 /* MemesCollectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD4E15E2232A52700CCB888 /* MemesCollectionCoordinator.swift */; };
+		BCD4E1622232A58D00CCB888 /* MemesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD4E1602232A58D00CCB888 /* MemesCollectionViewController.swift */; };
+		BCD4E1632232A58D00CCB888 /* MemesCollectionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCD4E1612232A58D00CCB888 /* MemesCollectionViewController.xib */; };
+		BCD4E1662232A7B200CCB888 /* UITableView+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD4E1652232A7B200CCB888 /* UITableView+ext.swift */; };
+		BCD4E16A2232A80300CCB888 /* MemeMeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD4E1682232A80300CCB888 /* MemeMeCell.swift */; };
+		BCD4E16B2232A80300CCB888 /* MemeMeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCD4E1692232A80300CCB888 /* MemeMeCell.xib */; };
+		BCD4E16F2232AF7000CCB888 /* MemeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD4E16D2232AF7000CCB888 /* MemeEditorViewController.swift */; };
+		BCD4E1702232AF7000CCB888 /* MemeEditorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCD4E16E2232AF7000CCB888 /* MemeEditorViewController.xib */; };
+		BCD4E174223303FA00CCB888 /* MemeMeCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD4E172223303FA00CCB888 /* MemeMeCollectionCell.swift */; };
+		BCD4E175223303FA00CCB888 /* MemeMeCollectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCD4E173223303FA00CCB888 /* MemeMeCollectionCell.xib */; };
 		BCD6720E20F0F3A5007A565B /* MemeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD6720D20F0F3A5007A565B /* MemeDetailViewController.swift */; };
 		BCD6721020F0FA37007A565B /* MemeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD6720F20F0FA37007A565B /* MemeCollectionViewCell.swift */; };
 		BCD6721220F16754007A565B /* MemeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD6721120F16754007A565B /* MemeTableViewCell.swift */; };
@@ -24,9 +40,12 @@
 /* Begin PBXFileReference section */
 		78C4144D8DCCEB77D38982CA /* Pods_MemeMe_1_0.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MemeMe_1_0.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2CDD3A4C5810A95A48F21CB /* Pods-MemeMe 1.0.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MemeMe 1.0.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MemeMe 1.0/Pods-MemeMe 1.0.debug.xcconfig"; sourceTree = "<group>"; };
+		BC19C1B522318A6800FB7964 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		BC19C1B922318B0B00FB7964 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		BC19C1BC2231914900FB7964 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		BCAD5BA920EAE944005C15C4 /* MemeMe 1.0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MemeMe 1.0.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCAD5BAC20EAE944005C15C4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BCAD5BAE20EAE944005C15C4 /* MemeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeEditorViewController.swift; sourceTree = "<group>"; };
+		BCAD5BAE20EAE944005C15C4 /* xMemeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xMemeEditorViewController.swift; sourceTree = "<group>"; };
 		BCAD5BB120EAE944005C15C4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BCAD5BB320EAE945005C15C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BCAD5BB620EAE945005C15C4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -34,6 +53,19 @@
 		BCB0B55E20EC4FF000BE3DA4 /* Meme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meme.swift; sourceTree = "<group>"; };
 		BCC1B06120F0614400C3B09A /* SentMemesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentMemesCollectionViewController.swift; sourceTree = "<group>"; };
 		BCC1B06320F0619100C3B09A /* SentMemesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentMemesTableViewController.swift; sourceTree = "<group>"; };
+		BCD4E157223299C100CCB888 /* MemesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemesTableViewController.swift; sourceTree = "<group>"; };
+		BCD4E158223299C100CCB888 /* MemesTableViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemesTableViewController.xib; sourceTree = "<group>"; };
+		BCD4E15B22329A5900CCB888 /* MemesTableCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemesTableCoordinator.swift; sourceTree = "<group>"; };
+		BCD4E15E2232A52700CCB888 /* MemesCollectionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemesCollectionCoordinator.swift; sourceTree = "<group>"; };
+		BCD4E1602232A58D00CCB888 /* MemesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemesCollectionViewController.swift; sourceTree = "<group>"; };
+		BCD4E1612232A58D00CCB888 /* MemesCollectionViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemesCollectionViewController.xib; sourceTree = "<group>"; };
+		BCD4E1652232A7B200CCB888 /* UITableView+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+ext.swift"; sourceTree = "<group>"; };
+		BCD4E1682232A80300CCB888 /* MemeMeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeMeCell.swift; sourceTree = "<group>"; };
+		BCD4E1692232A80300CCB888 /* MemeMeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemeMeCell.xib; sourceTree = "<group>"; };
+		BCD4E16D2232AF7000CCB888 /* MemeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeEditorViewController.swift; sourceTree = "<group>"; };
+		BCD4E16E2232AF7000CCB888 /* MemeEditorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemeEditorViewController.xib; sourceTree = "<group>"; };
+		BCD4E172223303FA00CCB888 /* MemeMeCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeMeCollectionCell.swift; sourceTree = "<group>"; };
+		BCD4E173223303FA00CCB888 /* MemeMeCollectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemeMeCollectionCell.xib; sourceTree = "<group>"; };
 		BCD6720D20F0F3A5007A565B /* MemeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeDetailViewController.swift; sourceTree = "<group>"; };
 		BCD6720F20F0FA37007A565B /* MemeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeCollectionViewCell.swift; sourceTree = "<group>"; };
 		BCD6721120F16754007A565B /* MemeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeTableViewCell.swift; sourceTree = "<group>"; };
@@ -69,6 +101,34 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		BC19C1B722318A9700FB7964 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				BCD4E1642232A77600CCB888 /* Extensions */,
+				BC19C1B822318AFD00FB7964 /* Coordinator */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		BC19C1B822318AFD00FB7964 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				BC19C1B922318B0B00FB7964 /* Coordinator.swift */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		BC19C1BB2231912900FB7964 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				BCD4E16C2232AD7000CCB888 /* MemeEditor */,
+				BCD4E15D2232A4C500CCB888 /* MemeMeCollection */,
+				BCD4E1562232994300CCB888 /* MemeMeTable */,
+				BC19C1BC2231914900FB7964 /* MainCoordinator.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
 		BCAD5BA020EAE944005C15C4 = {
 			isa = PBXGroup;
 			children = (
@@ -90,9 +150,10 @@
 		BCAD5BAB20EAE944005C15C4 /* MemeMe 1.0 */ = {
 			isa = PBXGroup;
 			children = (
-				BCAD5BAC20EAE944005C15C4 /* AppDelegate.swift */,
+				BC19C1B722318A9700FB7964 /* Core */,
+				BC19C1BB2231912900FB7964 /* Scenes */,
 				BCB0B55E20EC4FF000BE3DA4 /* Meme.swift */,
-				BCAD5BAE20EAE944005C15C4 /* MemeEditorViewController.swift */,
+				BCAD5BAE20EAE944005C15C4 /* xMemeEditorViewController.swift */,
 				BCD6720D20F0F3A5007A565B /* MemeDetailViewController.swift */,
 				BCC1B06320F0619100C3B09A /* SentMemesTableViewController.swift */,
 				BCC1B06120F0614400C3B09A /* SentMemesCollectionViewController.swift */,
@@ -102,8 +163,67 @@
 				BCAD5BB320EAE945005C15C4 /* Assets.xcassets */,
 				BCAD5BB520EAE945005C15C4 /* LaunchScreen.storyboard */,
 				BCAD5BB820EAE945005C15C4 /* Info.plist */,
+				BCAD5BAC20EAE944005C15C4 /* AppDelegate.swift */,
+				BC19C1B522318A6800FB7964 /* AppCoordinator.swift */,
 			);
 			path = "MemeMe 1.0";
+			sourceTree = "<group>";
+		};
+		BCD4E1562232994300CCB888 /* MemeMeTable */ = {
+			isa = PBXGroup;
+			children = (
+				BCD4E1672232A7E900CCB888 /* MemeMeCell */,
+				BCD4E157223299C100CCB888 /* MemesTableViewController.swift */,
+				BCD4E158223299C100CCB888 /* MemesTableViewController.xib */,
+				BCD4E15B22329A5900CCB888 /* MemesTableCoordinator.swift */,
+			);
+			path = MemeMeTable;
+			sourceTree = "<group>";
+		};
+		BCD4E15D2232A4C500CCB888 /* MemeMeCollection */ = {
+			isa = PBXGroup;
+			children = (
+				BCD4E1712233037600CCB888 /* MemeMeCell */,
+				BCD4E1602232A58D00CCB888 /* MemesCollectionViewController.swift */,
+				BCD4E1612232A58D00CCB888 /* MemesCollectionViewController.xib */,
+				BCD4E15E2232A52700CCB888 /* MemesCollectionCoordinator.swift */,
+			);
+			path = MemeMeCollection;
+			sourceTree = "<group>";
+		};
+		BCD4E1642232A77600CCB888 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				BCD4E1652232A7B200CCB888 /* UITableView+ext.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		BCD4E1672232A7E900CCB888 /* MemeMeCell */ = {
+			isa = PBXGroup;
+			children = (
+				BCD4E1682232A80300CCB888 /* MemeMeCell.swift */,
+				BCD4E1692232A80300CCB888 /* MemeMeCell.xib */,
+			);
+			path = MemeMeCell;
+			sourceTree = "<group>";
+		};
+		BCD4E16C2232AD7000CCB888 /* MemeEditor */ = {
+			isa = PBXGroup;
+			children = (
+				BCD4E16D2232AF7000CCB888 /* MemeEditorViewController.swift */,
+				BCD4E16E2232AF7000CCB888 /* MemeEditorViewController.xib */,
+			);
+			path = MemeEditor;
+			sourceTree = "<group>";
+		};
+		BCD4E1712233037600CCB888 /* MemeMeCell */ = {
+			isa = PBXGroup;
+			children = (
+				BCD4E172223303FA00CCB888 /* MemeMeCollectionCell.swift */,
+				BCD4E173223303FA00CCB888 /* MemeMeCollectionCell.xib */,
+			);
+			path = MemeMeCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,8 +287,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCAD5BB720EAE945005C15C4 /* LaunchScreen.storyboard in Resources */,
+				BCD4E1702232AF7000CCB888 /* MemeEditorViewController.xib in Resources */,
 				BCAD5BB420EAE945005C15C4 /* Assets.xcassets in Resources */,
+				BCD4E175223303FA00CCB888 /* MemeMeCollectionCell.xib in Resources */,
 				BCAD5BB220EAE944005C15C4 /* Main.storyboard in Resources */,
+				BCD4E15A223299C100CCB888 /* MemesTableViewController.xib in Resources */,
+				BCD4E1632232A58D00CCB888 /* MemesCollectionViewController.xib in Resources */,
+				BCD4E16B2232A80300CCB888 /* MemeMeCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,13 +359,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCAD5BAF20EAE944005C15C4 /* MemeEditorViewController.swift in Sources */,
+				BCD4E15F2232A52700CCB888 /* MemesCollectionCoordinator.swift in Sources */,
+				BCAD5BAF20EAE944005C15C4 /* xMemeEditorViewController.swift in Sources */,
 				BCD6721220F16754007A565B /* MemeTableViewCell.swift in Sources */,
+				BC19C1BA22318B0B00FB7964 /* Coordinator.swift in Sources */,
 				BCC1B06420F0619100C3B09A /* SentMemesTableViewController.swift in Sources */,
+				BCD4E16F2232AF7000CCB888 /* MemeEditorViewController.swift in Sources */,
 				BCD6721020F0FA37007A565B /* MemeCollectionViewCell.swift in Sources */,
+				BC19C1BD2231914900FB7964 /* MainCoordinator.swift in Sources */,
 				BCC1B06220F0614400C3B09A /* SentMemesCollectionViewController.swift in Sources */,
+				BCD4E159223299C100CCB888 /* MemesTableViewController.swift in Sources */,
+				BCD4E1622232A58D00CCB888 /* MemesCollectionViewController.swift in Sources */,
+				BCD4E174223303FA00CCB888 /* MemeMeCollectionCell.swift in Sources */,
 				BCB0B55F20EC4FF000BE3DA4 /* Meme.swift in Sources */,
+				BCD4E16A2232A80300CCB888 /* MemeMeCell.swift in Sources */,
+				BC19C1B622318A6800FB7964 /* AppCoordinator.swift in Sources */,
 				BCAD5BAD20EAE944005C15C4 /* AppDelegate.swift in Sources */,
+				BCD4E1662232A7B200CCB888 /* UITableView+ext.swift in Sources */,
+				BCD4E15C22329A5900CCB888 /* MemesTableCoordinator.swift in Sources */,
 				BCD6720E20F0F3A5007A565B /* MemeDetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

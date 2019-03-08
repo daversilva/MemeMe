@@ -1,9 +1,9 @@
 //
-//  ViewController.swift
+//  MemeEditorViewController.swift
 //  MemeMe 1.0
 //
-//  Created by David Rodrigues on 02/07/2018.
-//  Copyright © 2018 David Rodrigues. All rights reserved.
+//  Created by David Rodrigues on 08/03/19.
+//  Copyright © 2019 David Rodrigues. All rights reserved.
 //
 
 import UIKit
@@ -11,18 +11,22 @@ import RxCocoa
 import RxSwift
 import Foundation
 
+protocol MemeEditorDelegate {
+    func didCancel()
+}
+
 class MemeEditorViewController: UIViewController {
     
     /// Outlets
-    @IBOutlet weak var navBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
-    @IBOutlet weak var imagePickerView: UIImageView!
-    @IBOutlet weak var cameraButton: UIBarButtonItem!
     @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var bottomTextField: UITextField!
-    @IBOutlet weak var cancelButton: UIBarButtonItem!
-    @IBOutlet weak var shareButton: UIBarButtonItem!
+    @IBOutlet weak var imagePickerView: UIImageView!
+    @IBOutlet weak var cameraButton: UIBarButtonItem!
     @IBOutlet weak var albumButtoon: UIBarButtonItem!
+    
+    var cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
+    var shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: nil, action: nil)
     
     /// variables
     let top = "TOP"
@@ -31,9 +35,11 @@ class MemeEditorViewController: UIViewController {
     /// RxSwift
     var disposeBag = DisposeBag()
     var shareIsEnable = BehaviorRelay<Bool>(value: false)
-
+    
     override var prefersStatusBarHidden: Bool { return true }
-
+    
+    var delegate: MemeEditorDelegate?
+    
     /// lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,7 +83,7 @@ class MemeEditorViewController: UIViewController {
     }
     
     func configureBars(_ isHidden: Bool) {
-        navBar.isHidden = isHidden
+        navigationController?.setNavigationBarHidden(isHidden, animated: false)
         toolBar.isHidden = isHidden
     }
     
@@ -106,7 +112,7 @@ class MemeEditorViewController: UIViewController {
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
         return keyboardSize.cgRectValue.height
     }
-
+    
     func configureTextField(_ textField: UITextField) {
         let memeTextAttributes: [String: Any] = [
             NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
@@ -127,7 +133,6 @@ class MemeEditorViewController: UIViewController {
         present(imagePicker, animated: true, completion: nil)
         shareIsEnable.accept(true)
     }
-    
 }
 
 extension MemeEditorViewController: UITextFieldDelegate {
@@ -170,6 +175,9 @@ extension MemeEditorViewController {
         bottomTextField.text = bottom
         
         shareIsEnable.accept(false)
+        
+        navigationItem.leftBarButtonItem = cancelButton
+        navigationItem.rightBarButtonItem = shareButton
     }
     
     private func bindViews() {
@@ -177,7 +185,7 @@ extension MemeEditorViewController {
         shareIsEnable.bind(to: shareButton.rx.isEnabled).disposed(by: disposeBag)
         
         cancelButton.rx.tap.bind { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
+            self?.delegate?.didCancel()
         }.disposed(by: disposeBag)
         
         cameraButton.rx.tap.bind { [weak self] in
@@ -190,19 +198,17 @@ extension MemeEditorViewController {
         
         shareButton.rx.tap.bind { [weak self] in
             guard let strongSelf = self else { return }
-            
             strongSelf.cancelButton.isEnabled = true
+            
             let image = strongSelf.generateMemedImage()
             let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-            
             controller.completionWithItemsHandler = { activity, completed, items, error in
                 if completed {
                     strongSelf.save(image)
-                    strongSelf.dismiss(animated: true, completion: nil)
+                    strongSelf.delegate?.didCancel()
                 }
             }
-            
             strongSelf.present(controller, animated: true, completion: nil)
-        }.disposed(by: disposeBag)
+            }.disposed(by: disposeBag)
     }
 }

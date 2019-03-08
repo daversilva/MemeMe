@@ -13,11 +13,27 @@ import RxCocoa
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var coordinator: AppCoordinator?
     var memes = BehaviorRelay<[Meme]>(value: [])
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        startApp()
+        
         return true
     }
 
+}
+
+/// MARK :- Custom methods
+extension AppDelegate {
+    
+    func startApp() {
+        coordinator = AppCoordinator()
+        coordinator?.start()
+        window?.rootViewController = coordinator?.rootViewController
+        window?.makeKeyAndVisible()
+    }
+    
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="MemeMeCollectionCell" customModule="MemeMe_1_0" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="138" height="138"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="138" height="138"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="074-t6-bjg">
+                        <rect key="frame" x="0.0" y="0.0" width="138" height="138"/>
+                    </imageView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="074-t6-bjg" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="XPr-3Z-MwV"/>
+                <constraint firstAttribute="trailing" secondItem="074-t6-bjg" secondAttribute="trailing" id="Ytd-4a-IWB"/>
+                <constraint firstAttribute="bottom" secondItem="074-t6-bjg" secondAttribute="bottom" id="oMo-wC-ONm"/>
+                <constraint firstItem="074-t6-bjg" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="taG-Jb-DZQ"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <size key="customSize" width="185" height="129"/>
+            <connections>
+                <outlet property="sentMemeImageView" destination="074-t6-bjg" id="ZV3-fd-R7g"/>
+            </connections>
+            <point key="canvasLocation" x="237.59999999999999" y="189.3553223388306"/>
+        </collectionViewCell>
+    </objects>
+</document>
