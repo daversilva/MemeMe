@@ -17,7 +17,6 @@ class Coordinator {
     
     var childCoordinators = [UUID: Coordinator]()
     var rootViewController: UIViewController? = nil
-    var isAnimated: Bool = true
     
     let identifier = UUID()
     

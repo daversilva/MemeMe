@@ -14,7 +14,6 @@ class MemeMeCollectionCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
     }
 
 }

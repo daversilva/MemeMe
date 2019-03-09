@@ -13,6 +13,7 @@ import RxDataSources
 
 protocol MemesTableViewDelegate {
     func didShowMemeEditor()
+    func didShowMemeDetail(for meme: Meme)
 }
 
 class MemesTableViewController: UIViewController {
@@ -21,7 +22,7 @@ class MemesTableViewController: UIViewController {
     
     var delegate: MemesTableViewDelegate?
     
-    let addMemeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: nil, action: nil)
+    let addMemeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: nil, action: nil)
     var section = BehaviorRelay<[SectionOfMeme]>(value: [])
     let disposeBag = DisposeBag()
     
@@ -62,7 +63,7 @@ extension MemesTableViewController {
         navigationItem.title = "Sent Memes"
         navigationItem.rightBarButtonItem = addMemeButton
         
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 110
         tableView.registerCellWithNib(MemeMeCell.self)
         
@@ -82,18 +83,12 @@ extension MemesTableViewController {
                 return cell
         })
         
-//        tableView.delegate = nil
-//        tableView.dataSource = nil
-//        tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        
         tableView.rx.itemSelected
             .observeOn(MainScheduler.asyncInstance)
             .map { $0.row }
             .bind { [weak self] row in
                 guard let strongSelf = self else { return }
-                let detailController = self?.storyboard?.instantiateViewController(withIdentifier: "MemeDetailViewController") as! MemeDetailViewController
-                detailController.meme = strongSelf.memesSaved.value[row]
-                self?.navigationController?.pushViewController(detailController, animated: true)
+                strongSelf.delegate!.didShowMemeDetail(for: strongSelf.memesSaved.value[row])
             }.disposed(by: disposeBag)
         
         section

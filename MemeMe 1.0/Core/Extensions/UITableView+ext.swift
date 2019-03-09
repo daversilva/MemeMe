@@ -7,7 +7,6 @@
 //
 
 import Foundation
-
 import UIKit
 
 extension UITableView {
@@ -34,33 +33,5 @@ extension UITableView {
     func dequeueReusableCell<T: UITableViewCell>(type: T.Type, indexPath: IndexPath) -> T {
         return dequeueReusableCell(withIdentifier: String(describing: T.self), for: indexPath) as? T ?? T()
     }
-    
-    func sizeHeaderToFit() {
-        if let headerView = tableHeaderView {
-            
-            headerView.setNeedsLayout()
-            headerView.layoutIfNeeded()
-            
-            let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-            var frame = headerView.frame
-            frame.size.height = height
-            headerView.frame = frame
-            
-            tableHeaderView = headerView
-        }
-    }
-    
-    func sizeFooterToFit() {
-        if let footerView = tableFooterView {
-            footerView.setNeedsLayout()
-            footerView.layoutIfNeeded()
-            
-            let height = footerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-            var frame = footerView.frame
-            frame.size.height = height
-            footerView.frame = frame
-            
-            tableFooterView = footerView
-        }
-    }
+ 
 }

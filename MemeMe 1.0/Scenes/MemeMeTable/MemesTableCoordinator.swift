@@ -25,6 +25,14 @@ class MemesTableCoordinator: Coordinator {
 }
 
 extension MemesTableCoordinator: MemesTableViewDelegate {
+    
+    func didShowMemeDetail(for meme: Meme) {
+        let vc = MemeDetailViewController()
+        vc.meme = meme
+        vc.hidesBottomBarWhenPushed = true
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
     func didShowMemeEditor() { 
         let vc = MemeEditorViewController()
         vc.delegate = self

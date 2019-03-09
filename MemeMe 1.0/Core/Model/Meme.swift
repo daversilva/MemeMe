@@ -30,6 +30,6 @@ extension Meme: IdentifiableType {
     typealias Identity = String
     
     var identity: Meme.Identity {
-        return "\(top)#\(bottom)#\(meme)#\(date.timeIntervalSinceNow)"
+        return "\(String(describing: top))#\(String(describing: bottom))#\(String(describing: meme))#\(date.timeIntervalSinceNow)"
     }
 }

@@ -13,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MemesCollectionViewController" customModule="MemeMe_1_0" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="pEC-az-pmU" id="Jmf-mU-Nyp"/>
+                <outlet property="flowLayout" destination="Ok0-6B-GMb" id="4xx-vt-SBa"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

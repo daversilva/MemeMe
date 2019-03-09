@@ -11,13 +11,21 @@ import RxCocoa
 import RxSwift
 import RxDataSources
 
+typealias SectionOfMeme = AnimatableSectionModel<String, Meme>
+
+protocol MemesCollectionViewDelegate {
+    func didShowMemeEditor()
+    func didShowMemeDetail(for meme: Meme)
+}
+
 class MemesCollectionViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    
-    @IBOutlet weak var addMemeButton: UIBarButtonItem!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     
+    let addMemeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: nil, action: nil)
+    var section = BehaviorRelay<[SectionOfMeme]>(value: [])
+    var delegate: MemesCollectionViewDelegate?
     var disposeBag = DisposeBag()
     
     var memesSaved: BehaviorRelay<[Meme]> {
@@ -25,9 +33,7 @@ class MemesCollectionViewController: UIViewController {
         let appDelegate = object as! AppDelegate
         return appDelegate.memes
     }
-    
-    var section = BehaviorRelay<[SectionOfMeme]>(value: [])
-    
+
     let emptyMemesLabel: UILabel = {
         let label = UILabel()
         label.text = "🤔 no memes yet!"
@@ -54,6 +60,8 @@ class MemesCollectionViewController: UIViewController {
 extension MemesCollectionViewController {
     
     private func setupViews() {
+        navigationItem.title = "Sent Memes"
+        navigationItem.rightBarButtonItem = addMemeButton
         
         //configureFlowLayout
         let space: CGFloat = 3.0
@@ -64,35 +72,28 @@ extension MemesCollectionViewController {
         flowLayout.minimumLineSpacing = 0
         flowLayout.itemSize = CGSize(width: dimensionWidth , height: dimensionHeight)
         
+        collectionView.registerCellWithNib(MemeMeCollectionCell.self)
         collectionView.addSubview(emptyMemesLabel)
         
         emptyMemesLabel.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor).isActive = true
-        emptyMemesLabel.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -55).isActive = true
+        emptyMemesLabel.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -10).isActive = true
     }
     
     private func bindViews() {
         
-//        guard let `collectionView` = collectionView else { fatalError() }
-        
         let dataSource = RxCollectionViewSectionedReloadDataSource<SectionOfMeme> (
             configureCell: { dataSource, collectionView, indexPath, item in
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemeCollectionViewCell", for: indexPath) as! MemeCollectionViewCell
+                let cell = collectionView.dequeueReusableCell(type: MemeMeCollectionCell.self, indexPath: indexPath)
                 cell.sentMemeImageView?.image = item.meme
                 return cell
         })
-        
-//        collectionView.delegate = nil
-//        collectionView.dataSource = nil
-//        collectionView.rx.setDelegate(self).disposed(by: disposeBag)
         
         collectionView.rx.itemSelected
             .observeOn(MainScheduler.asyncInstance)
             .map { $0.row }
             .bind { [weak self] row in
                 guard let strongSelf = self else { return }
-                let detailController = strongSelf.storyboard?.instantiateViewController(withIdentifier: "MemeDetailViewController") as! MemeDetailViewController
-                detailController.meme = strongSelf.memesSaved.value[row]
-                strongSelf.navigationController?.pushViewController(detailController, animated: true)
+                strongSelf.delegate!.didShowMemeDetail(for: strongSelf.memesSaved.value[row])
             }.disposed(by: disposeBag)
         
         section
@@ -108,8 +109,7 @@ extension MemesCollectionViewController {
             .disposed(by: disposeBag)
         
         addMemeButton.rx.tap.bind { [weak self] in
-            let vc = self?.storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! MemeEditorViewController
-            self?.present(vc, animated: true, completion: nil)
+            self?.delegate?.didShowMemeEditor()
             }.disposed(by: disposeBag)
         
     }
