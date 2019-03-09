@@ -9,4 +9,5 @@ target 'MemeMe 1.0' do
   pod 'RxSwift',    '~> 4.0'
   pod 'RxCocoa',    '~> 4.0'
   pod 'RxDataSources', '~> 3.0'
+  pod 'RxSwiftExt'
 end

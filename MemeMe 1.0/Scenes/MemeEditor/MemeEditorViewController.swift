@@ -11,10 +11,6 @@ import RxCocoa
 import RxSwift
 import Foundation
 
-protocol MemeEditorDelegate {
-    func didCancel()
-}
-
 class MemeEditorViewController: UIViewController {
     
     /// Outlets
@@ -32,14 +28,22 @@ class MemeEditorViewController: UIViewController {
     let top = "TOP"
     let bottom = "BOTTOM"
     
+    var viewModel: MemeEditorViewModelType?
+    
     /// RxSwift
     var disposeBag = DisposeBag()
-    var shareIsEnable = BehaviorRelay<Bool>(value: false)
     
     override var prefersStatusBarHidden: Bool { return true }
     
-    var delegate: MemeEditorDelegate?
+    init(viewModel: MemeEditorViewModelType) {
+        self.viewModel = viewModel
+        super.init(nibName: "MemeEditorViewController", bundle: nil)
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
     /// lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,32 +64,99 @@ class MemeEditorViewController: UIViewController {
         super.viewWillDisappear(animated)
         unsubscribeFromKeyboardNotifications()
     }
+
+}
+
+extension MemeEditorViewController: UITextFieldDelegate {
     
-    func save(_ memedImage: UIImage) {
-        let meme = Meme(top: topTextField.text!, bottom: bottomTextField.text!, original: imagePickerView.image!, meme: memedImage)
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField.text == top || textField.text == bottom {
+            textField.text = ""
+        }
         
-        let object = UIApplication.shared.delegate
-        let appDelegate = object as! AppDelegate
-        appDelegate.memes.accept(appDelegate.memes.value + [meme])
+        textField == bottomTextField ? subscribeToKeyboardNotifications() : unsubscribeFromKeyboardNotifications()
     }
     
-    func generateMemedImage() -> UIImage {
-        configureBars(true)
-        
-        UIGraphicsBeginImageContext(self.view.frame.size)
-        view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
-        let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        
-        configureBars(false)
-        
-        return memedImage
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
-    func configureBars(_ isHidden: Bool) {
-        navigationController?.setNavigationBarHidden(isHidden, animated: false)
-        toolBar.isHidden = isHidden
+}
+
+extension MemeEditorViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        // Local variable inserted by Swift 4.2 migrator.
+        let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
+        if let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage {
+            imagePickerView.image = image
+            imagePickerView.contentMode = .scaleAspectFit
+            dismiss(animated: true, completion: nil)
+        }
     }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK: - Setups
+extension MemeEditorViewController {
+    
+    private func setupViews() {
+        topTextField.text = top
+        bottomTextField.text = bottom
+        
+        viewModel?.shareIsEnable.accept(false)
+        
+        navigationItem.leftBarButtonItem = cancelButton
+        navigationItem.rightBarButtonItem = shareButton
+    }
+    
+    private func bindViews() {
+        guard let viewModel = viewModel else { fatalError("viewModel should not be nil") }
+        
+        viewModel.shareIsEnable
+            .bind(to: shareButton.rx.isEnabled).disposed(by: disposeBag)
+        
+        cancelButton.rx.tap.bind { [weak self] in
+            self?.viewModel?.cancelEditEvent.onNext(())
+        }.disposed(by: disposeBag)
+        
+        cameraButton.rx.tap.bind { [weak self] in
+            self?.configurePickerAnImage(.camera)
+        }.disposed(by: disposeBag)
+        
+        albumButtoon.rx.tap.bind { [weak self] in
+            self?.configurePickerAnImage(.photoLibrary)
+        }.disposed(by: disposeBag)
+        
+        shareButton.rx.tap.bind { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.cancelButton.isEnabled = true
+            
+            let image = strongSelf.generateMemedImage()
+            let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+            controller.completionWithItemsHandler = { activity, completed, items, error in
+                if completed {
+                    let meme = Meme(top: strongSelf.topTextField.text!,
+                                    bottom: strongSelf.bottomTextField.text!,
+                                    original: strongSelf.imagePickerView.image!,
+                                    meme: image)
+                    strongSelf.viewModel?.saveMemeEvent.onNext(meme)
+                    strongSelf.viewModel?.cancelEditEvent.onNext(())
+                }
+            }
+            strongSelf.present(controller, animated: true, completion: nil)
+        }.disposed(by: disposeBag)
+    }
+    
+}
+
+// Keyboard
+extension MemeEditorViewController {
     
     func subscribeToKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -112,6 +183,10 @@ class MemeEditorViewController: UIViewController {
         let keyboardSize = userInfo![UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
         return keyboardSize.cgRectValue.height
     }
+}
+
+// Methods
+extension MemeEditorViewController {
     
     func configureTextField(_ textField: UITextField) {
         let memeTextAttributes: [String: Any] = [
@@ -125,108 +200,45 @@ class MemeEditorViewController: UIViewController {
         textField.delegate = self
     }
     
+    func generateMemedImage() -> UIImage {
+        configureBars(true)
+        
+        UIGraphicsBeginImageContext(self.view.frame.size)
+        view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
+        let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        configureBars(false)
+        
+        return memedImage
+    }
+    
+    func configureBars(_ isHidden: Bool) {
+        navigationController?.setNavigationBarHidden(isHidden, animated: false)
+        toolBar.isHidden = isHidden
+    }
+    
     func configurePickerAnImage(_ sourceType: UIImagePickerController.SourceType) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = sourceType
         
         present(imagePicker, animated: true, completion: nil)
-        shareIsEnable.accept(true)
+        viewModel?.shareIsEnable.accept(true)
     }
 }
 
-extension MemeEditorViewController: UITextFieldDelegate {
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField.text == top || textField.text == bottom {
-            textField.text = ""
-        }
-        
-        textField == bottomTextField ? subscribeToKeyboardNotifications() : unsubscribeFromKeyboardNotifications()
+    // Helper function inserted by Swift 4.2 migrator.
+    fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+        return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
     }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
+
+    // Helper function inserted by Swift 4.2 migrator.
+    fileprivate func convertToNSAttributedStringKeyDictionary(_ input: [String: Any]) -> [NSAttributedString.Key: Any] {
+        return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
     }
-    
-}
 
-extension MemeEditorViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-// Local variable inserted by Swift 4.2 migrator.
-let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
-
-        if let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage {
-            imagePickerView.image = image
-            imagePickerView.contentMode = .scaleAspectFit
-            dismiss(animated: true, completion: nil)
-        }
+    // Helper function inserted by Swift 4.2 migrator.
+    fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+        return input.rawValue
     }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
-    }
-}
-
-// MARK: - Setups
-extension MemeEditorViewController {
-    
-    private func setupViews() {
-        topTextField.text = top
-        bottomTextField.text = bottom
-        
-        shareIsEnable.accept(false)
-        
-        navigationItem.leftBarButtonItem = cancelButton
-        navigationItem.rightBarButtonItem = shareButton
-    }
-    
-    private func bindViews() {
-        
-        shareIsEnable.bind(to: shareButton.rx.isEnabled).disposed(by: disposeBag)
-        
-        cancelButton.rx.tap.bind { [weak self] in
-            self?.delegate?.didCancel()
-        }.disposed(by: disposeBag)
-        
-        cameraButton.rx.tap.bind { [weak self] in
-            self?.configurePickerAnImage(.camera)
-        }.disposed(by: disposeBag)
-        
-        albumButtoon.rx.tap.bind { [weak self] in
-            self?.configurePickerAnImage(.photoLibrary)
-        }.disposed(by: disposeBag)
-        
-        shareButton.rx.tap.bind { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.cancelButton.isEnabled = true
-            
-            let image = strongSelf.generateMemedImage()
-            let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-            controller.completionWithItemsHandler = { activity, completed, items, error in
-                if completed {
-                    strongSelf.save(image)
-                    strongSelf.delegate?.didCancel()
-                }
-            }
-            strongSelf.present(controller, animated: true, completion: nil)
-        }.disposed(by: disposeBag)
-    }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToNSAttributedStringKeyDictionary(_ input: [String: Any]) -> [NSAttributedString.Key: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
-	return input.rawValue
-}

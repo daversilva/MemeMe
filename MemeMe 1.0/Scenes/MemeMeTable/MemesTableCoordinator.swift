@@ -16,8 +16,9 @@ class MemesTableCoordinator: Coordinator {
     override init() { }
     
     override func start() {
-        let vc = MemesTableViewController()
-        vc.delegate = self
+        let vm = MemesTableViewModel()
+        vm.delegate = self
+        let vc = MemesTableViewController(viewModel: vm)
         navigationController = UINavigationController(rootViewController: vc)
         navigationController.tabBarItem = UITabBarItem(title: nil, image: UIImage(named: "table")!, tag: 0)
         self.rootViewController = navigationController
@@ -33,9 +34,10 @@ extension MemesTableCoordinator: MemesTableViewDelegate {
         navigationController.pushViewController(vc, animated: true)
     }
     
-    func didShowMemeEditor() { 
-        let vc = MemeEditorViewController()
-        vc.delegate = self
+    func didShowMemeEditor() {
+        let vm = MemeEditorViewModel()
+        vm.delegate = self
+        let vc = MemeEditorViewController(viewModel: vm)
         vc.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(vc, animated: true)
     }

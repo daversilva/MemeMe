@@ -11,28 +11,15 @@ import RxCocoa
 import RxSwift
 import RxDataSources
 
-typealias SectionOfMeme = AnimatableSectionModel<String, Meme>
-
-protocol MemesCollectionViewDelegate {
-    func didShowMemeEditor()
-    func didShowMemeDetail(for meme: Meme)
-}
-
 class MemesCollectionViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     
     let addMemeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: nil, action: nil)
-    var section = BehaviorRelay<[SectionOfMeme]>(value: [])
-    var delegate: MemesCollectionViewDelegate?
+
     var disposeBag = DisposeBag()
-    
-    var memesSaved: BehaviorRelay<[Meme]> {
-        let object = UIApplication.shared.delegate
-        let appDelegate = object as! AppDelegate
-        return appDelegate.memes
-    }
+    var viewModel: MemesCollectionViewModelType?
 
     let emptyMemesLabel: UILabel = {
         let label = UILabel()
@@ -41,6 +28,15 @@ class MemesCollectionViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    init(viewModel: MemesCollectionViewModelType) {
+        self.viewModel = viewModel
+        super.init(nibName: "MemesCollectionViewController", bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,6 +76,7 @@ extension MemesCollectionViewController {
     }
     
     private func bindViews() {
+        guard let viewModel = viewModel else { fatalError("viewModel should not be nil") }
         
         let dataSource = RxCollectionViewSectionedReloadDataSource<SectionOfMeme> (
             configureCell: { dataSource, collectionView, indexPath, item in
@@ -93,23 +90,22 @@ extension MemesCollectionViewController {
             .map { $0.row }
             .bind { [weak self] row in
                 guard let strongSelf = self else { return }
-                strongSelf.delegate!.didShowMemeDetail(for: strongSelf.memesSaved.value[row])
+                strongSelf.viewModel?.selectMemeEvent.onNext(row)
             }.disposed(by: disposeBag)
         
-        section
+        viewModel.section
             .observeOn(MainScheduler.asyncInstance)
             .bind(to: self.collectionView!.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        memesSaved
+        viewModel.memesSaved
             .bind { [weak self] memes in
-                self?.section.accept([SectionOfMeme(model: "", items: memes)])
                 self?.emptyMemesLabel.isHidden = !(memes.count == 0)
             }
             .disposed(by: disposeBag)
         
         addMemeButton.rx.tap.bind { [weak self] in
-            self?.delegate?.didShowMemeEditor()
+            self?.viewModel?.showMemeEditorEvent.onNext(())
             }.disposed(by: disposeBag)
         
     }

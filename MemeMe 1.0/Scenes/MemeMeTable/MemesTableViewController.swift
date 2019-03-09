@@ -11,27 +11,15 @@ import RxCocoa
 import RxSwift
 import RxDataSources
 
-protocol MemesTableViewDelegate {
-    func didShowMemeEditor()
-    func didShowMemeDetail(for meme: Meme)
-}
-
 class MemesTableViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    
-    var delegate: MemesTableViewDelegate?
-    
+        
     let addMemeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: nil, action: nil)
-    var section = BehaviorRelay<[SectionOfMeme]>(value: [])
+    
     let disposeBag = DisposeBag()
-    
-    var memesSaved: BehaviorRelay<[Meme]> {
-        let object = UIApplication.shared.delegate
-        let appDelegate = object as! AppDelegate
-        return appDelegate.memes
-    }
-    
+    var viewModel: MemeTableViewModelType?
+
     /// custom
     let emptyMemesLabel: UILabel = {
         let label = UILabel()
@@ -40,6 +28,15 @@ class MemesTableViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    init(viewModel: MemeTableViewModelType) {
+        self.viewModel = viewModel
+        super.init(nibName: "MemesTableViewController", bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,8 +49,6 @@ class MemesTableViewController: UIViewController {
         tableView.reloadData()
     }
     
-    
-
 }
 
 // MARK: - Setups
@@ -75,6 +70,8 @@ extension MemesTableViewController {
     
     private func bindViews() {
         
+        guard let viewModel = viewModel else { fatalError("viewModel should not be nil") }
+        
         let dataSource = RxTableViewSectionedReloadDataSource<SectionOfMeme> (
             configureCell: { dataSource, tableView, indexPath, item in
                 let cell = tableView.dequeueReusableCell(type: MemeMeCell.self, indexPath: indexPath)
@@ -88,23 +85,22 @@ extension MemesTableViewController {
             .map { $0.row }
             .bind { [weak self] row in
                 guard let strongSelf = self else { return }
-                strongSelf.delegate!.didShowMemeDetail(for: strongSelf.memesSaved.value[row])
+                strongSelf.viewModel?.selectMemeEvent.onNext(row)
             }.disposed(by: disposeBag)
         
-        section
+        viewModel.section
             .observeOn(MainScheduler.asyncInstance)
             .bind(to: self.tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        memesSaved
+        viewModel.memesSaved
             .bind { [weak self] memes in
-                self?.section.accept([SectionOfMeme(model: "", items: memes)])
                 self?.emptyMemesLabel.isHidden = !(memes.count == 0)
                 self?.tableView.separatorStyle = memes.count == 0 ? .none : .singleLine
         }.disposed(by: disposeBag)
         
         addMemeButton.rx.tap.bind { [weak self] in
-            self?.delegate?.didShowMemeEditor()
+            self?.viewModel?.showMemeEditorEvent.onNext(())
         }.disposed(by: disposeBag)
         
     }

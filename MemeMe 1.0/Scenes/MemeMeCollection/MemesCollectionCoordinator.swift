@@ -16,8 +16,9 @@ class MemesCollectionCoordinator: Coordinator {
     override init() { }
     
     override func start() {
-        let vc = MemesCollectionViewController()
-        vc.delegate = self
+        let vm = MemesCollectionViewModel()
+        vm.delegate = self
+        let vc = MemesCollectionViewController(viewModel: vm)
         navigationController = UINavigationController(rootViewController: vc)
         navigationController.tabBarItem = UITabBarItem(title: nil, image: UIImage(named: "collection")!, tag: 1)
         self.rootViewController = navigationController
@@ -34,8 +35,9 @@ extension MemesCollectionCoordinator: MemesCollectionViewDelegate {
     }
     
     func didShowMemeEditor() {
-        let vc = MemeEditorViewController()
-        vc.delegate = self
+        let vm = MemeEditorViewModel()
+        vm.delegate = self
+        let vc = MemeEditorViewController(viewModel: vm)
         vc.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(vc, animated: true)
     }
